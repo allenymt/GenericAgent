@@ -10,11 +10,17 @@
 
 ```python
 from vision_api import ask_vision
-result = ask_vision(image, prompt="描述图片内容", backend="claude", timeout=60, max_pixels=1_440_000)
-# image: 文件路径(str/Path) 或 PIL Image
-# backend: 'claude'(默认) | 'openai' | 'modelscope'
+result = ask_vision(image_input, prompt="描述图片内容", backend="openai", timeout=90, max_pixels=1_440_000)
+# image_input: 文件路径(str/Path) 或 PIL Image（⚠️ 参数名是 image_input，不是 image）
+# backend: 'claude' | 'openai'(推荐) | 'modelscope'
 # 返回 str：成功为模型回复，失败为 'Error: ...'
 ```
+
+## ⚠️ 关键避坑（已验证踩过）
+
+1. **vision模型必须用 mimo-v2-omni**：native_oai_mimo_config 默认的 mimo-v2.5-pro 不支持图片输入（404）。只有 `mimo-v2-omni` 支持 vision。调用时需用 code_run 手动指定 model，或修改 vision_api.py 的 VISION_MODEL_OVERRIDE。
+2. **apibase 已含 /v1，URL 不能重复拼接**：vision_api.py 的 `_call_openai_compat` 拼接 URL 时，必须先 `removesuffix('/v1')` 再拼 `/v1/chat/completions`，否则 404。
+3. **参数名是 image_input（位置参数）**：SOP 写的 `ask_vision(image, ...)` 是错的，实际签名是 `ask_vision(image_input, prompt, timeout, max_pixels, backend)`，第一个参数是位置参数 `image_input`。
 
 ## 如果没有 `vision_api.py`，初次构建vision能力
 
