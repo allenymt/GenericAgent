@@ -10,9 +10,9 @@
 
 ```python
 from vision_api import ask_vision
-result = ask_vision(image_input, prompt="描述图片内容", backend="openai", timeout=90, max_pixels=1_440_000)
-# image_input: 文件路径(str/Path) 或 PIL Image（⚠️ 参数名是 image_input，不是 image）
-# backend: 'claude' | 'openai'(推荐) | 'modelscope'
+result = ask_vision(image, prompt="描述图片内容", timeout=60, max_pixels=1_440_000)
+# image: 文件路径(str/Path) 或 PIL Image
+# backend: 'claude'(默认) | 'openai' | 'modelscope'
 # 返回 str：成功为模型回复，失败为 'Error: ...'
 ```
 
